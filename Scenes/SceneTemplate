@@ -1,0 +1,23 @@
+local scene = {}
+
+scene.name = "template"
+
+scene.parentTable = {}
+scene.active = false
+
+function scene.load(parent)
+    scene.parentTable = parent
+    scene.active = true
+end
+
+function scene.update(dt)
+end
+
+function scene.keyreleased(key)
+    if not scene.active then return end
+end
+
+function scene.draw()
+end
+
+return scene
