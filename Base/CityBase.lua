@@ -1,9 +1,8 @@
 local People = require("Base.PeopleBase")
-local search = require("Tools.Search")
 
 local City = {}
 
-local seed = 654
+local seed = 10000000
 local next = next
 
 
@@ -28,11 +27,11 @@ function City.Create(leader, peopleCount)
 
     function o:newYear()
         self.year = self.year + 1
-        self.seed = self.seed + 1
+        self.seed = self.seed + self.year
         for i = 1, self.peopleCount do
             self.population[i]:increaseAge()
         end
-        self.population, self.couples = FindPartners(self.population, self.seed)
+        self.population, self.couples = FindPartners(self.population, self.couples, self.seed)
         self.population, self.peopleCount = BabyMaking(self.couples, self.population, self.peopleCount, self.seed)
         print("  ¤ Year: " .. self.year)
     end
@@ -59,7 +58,7 @@ function CreatePopulation(amount, leader, currentSeed)
 
     local babies = 0
     local couples = {}
-    population, couples, babies = FindPartners(population, currentSeed)
+    population, couples, babies = FindPartners(population, couples, currentSeed)
     print("  -- Matched couples")
 
     amount = amount + babies - 1
@@ -72,12 +71,12 @@ end
 -- ##################################################
 --               Yearly functions
 -- ##################################################
-function FindPartners(population, currentSeed)
+function FindPartners(population, oldCouples, currentSeed)
     local amount = #population
 
     -- Create children
     local babies = 0
-    local couples = {}
+    local couples = oldCouples
     local probability = amount
     while true do
         if probability < amount * 0.3 then
@@ -126,7 +125,7 @@ function FindPartners(population, currentSeed)
             -- Break if no partners
             itterations = itterations + 1
             if itterations == amount then
-                print("[Debug]No more partners, Line: " .. debug.getinfo(1).currentline .. " in CityBase.lua")
+                print("[Debug] No more partners, Line: " .. debug.getinfo(1).currentline .. " in CityBase.lua")
                 break
             end
 
@@ -145,8 +144,10 @@ function FindPartners(population, currentSeed)
 end
 
 function BabyMaking(couples, population, amount, currentSeed)
-    local amountOfKids = math.floor(#couples * love.math.noise(currentSeed, currentSeed))
-    local currentIndex = math.floor(#couples * love.math.noise(currentSeed * 2.4, currentSeed * 4.2))
+    local amountOfKids = math.floor(#couples * love.math.noise(currentSeed *1.345, currentSeed * 1.345))
+    local currentIndex = math.max(math.floor(#couples * love.math.noise(currentSeed * 2.4, currentSeed * 4.2)), 1)
+
+    print("[DEBUG] chance: " .. love.math.noise(currentSeed * 1.345, currentSeed * 1.345) .. " Seed: " .. currentSeed * 1.345 .. ", Line: " .. debug.getinfo(1).currentline .. " in CityBase.lua")
 
     local babies = 0
 
@@ -154,6 +155,8 @@ function BabyMaking(couples, population, amount, currentSeed)
         if currentIndex + 1 >= #couples - 1 then
             currentIndex = 1
         end
+
+        if #couples[currentIndex].child > 3 then goto continue end
 
         if couples[currentIndex].gender == 'm' then
             population[amount + babies] = People.CreateChild(0, 0, couples[currentIndex], couples[currentIndex].partner[1], amount + babies)
@@ -163,6 +166,8 @@ function BabyMaking(couples, population, amount, currentSeed)
 
         babies = babies + 1
         currentIndex = currentIndex + 1
+
+        ::continue::
     end
     print("  -- Babies made: " .. amountOfKids)
 

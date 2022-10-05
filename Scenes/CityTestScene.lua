@@ -7,7 +7,7 @@ scene.name = "City"
 
 local mayor = {}
 local myCity = {}
-local startCitySize = 100000
+local startCitySize = 1000
 local personInCity = 1
 local peopleToPrint = {}
 
@@ -53,7 +53,7 @@ end
 -- Scrolling
 function love.wheelmoved(x, y)
     mouseScroll.x = mouseScroll.x + x * 3
-    mouseScroll.y = mouseScroll.y + y * 3
+    mouseScroll.y = mouseScroll.y + y * 10
     mouseScroll.y = math.min(0, mouseScroll.y)
 end
 

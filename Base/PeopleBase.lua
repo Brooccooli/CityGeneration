@@ -3,6 +3,8 @@ local Person = {}
 local skip = "skip"
 local next = next
 
+
+
 -- ##########################################
 --        Initilization functions
 -- ##########################################
@@ -56,7 +58,7 @@ function Person.CreateAdult(seed, x, y, father, mother, age, child, index)
 end
 
 function Person.CreateChild(x, y, father, mother, index)
-    local newSeed = ((father.seed + #father.child) * 0.2) + ((mother.seed + #mother.child) * 0.2) * index
+    local newSeed = ((father.seed + index)) + ((mother.seed + index))
     local o = Person.CreateAdult(newSeed, x or 0, y or 0, father, mother, 0, nil, index)
     father:addChild(o)
     mother:addChild(o)
@@ -99,9 +101,17 @@ function Relations(o, father, mother, child)
         if #self.child > 1 then
             for i = 1, #self.child - 1 do
                 -- Add Child to siblings
-                self.child[i]:addSibling(child)
+                local alreadySibling = false
+                for j = 1, #self.child[i].siblings do
+                    if self.child[i].siblings[j] == child then AlreadySibling = true end
+                end
+                if not AlreadySibling then self.child[i]:addSibling(child) end
                 -- Add siblings to Child
-                child:addSibling(self.child[i])
+                alreadySibling = false
+                for j = 1, #child.siblings do
+                    if child.siblings[j] == self.child[i] then AlreadySibling = true end
+                end
+                if not AlreadySibling then child:addSibling(self.child[i]) end
             end
         end
     end
@@ -178,6 +188,7 @@ function Person.PrintRelations(person)
     end
 
     if #person.siblings > 0 then
+        string = string .. "\n Amount of siblings: " .. #person.siblings
         for i = 1, #person.siblings do
             string = string .. "\n\n" .. "  Sibling: " .. person.siblings[i].firstName .. " " .. person.siblings[i].lastName
         end
