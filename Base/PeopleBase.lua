@@ -171,7 +171,7 @@ end
 -- ###########################################
 function Person.PrintRelations(person)
     local string = ("Name: " .. person.firstName .. " " .. person.lastName ..
-        "\n Sex: " .. person.gender ..
+        "\n Gender: " .. person.gender ..
         "\n Age: " .. person.age .. 
         "\n Length: " .. person.length .. 
         "\n  Father: " .. person.father.firstName .. " " .. person.father.lastName .. 
