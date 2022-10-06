@@ -143,8 +143,8 @@ function scene.draw()
         mainString = "\n" .. people.PrintStats(peopleToPrint[1])        
     else
         -- Top menu
-        menuString = menuString .. " B: Main menu"
-        menuString = menuString .. "\n\n   | N: New child | F: Current persons Father | M: Current persons Mother | C: Curent persons Children | T: Show stats |"
+        menuString = menuString .. " | B: Main menu | T: Show stats | Y: Forward one year |"
+        menuString = menuString .. "\n\n   | N: Random child | F: Father | M: Mother | C: Children | P: Partner |"
 
         -- Create String of all people to print
         for i = 1, #peopleToPrint do

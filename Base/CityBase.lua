@@ -2,9 +2,8 @@ local People = require("Base.PeopleBase")
 
 local City = {}
 
-local seed = 10000000
+local seed = 7654
 local next = next
-
 
 
 -- ############################################
@@ -28,12 +27,16 @@ function City.Create(leader, peopleCount)
     function o:newYear()
         self.year = self.year + 1
         self.seed = self.seed + self.year
+        local m, w = 0, 0
         for i = 1, self.peopleCount do
             self.population[i]:increaseAge()
+            if self.population[i].gender == 'm' then m = m + 1 else w = w + 1 end
         end
-        self.population, self.couples = FindPartners(self.population, self.couples, self.seed)
+        self.couples = FindPartners(self.population, self.couples, self.seed)
         self.population, self.peopleCount = BabyMaking(self.couples, self.population, self.peopleCount, self.seed)
-        print("  ¤ Year: " .. self.year)
+
+        print("  ¤ Year: " .. self.year .. " Population: " .. self.peopleCount)
+        print("               Men: " .. m .. "   Women: " .. w)
     end
 
     return o
@@ -58,7 +61,7 @@ function CreatePopulation(amount, leader, currentSeed)
 
     local babies = 0
     local couples = {}
-    population, couples, babies = FindPartners(population, couples, currentSeed)
+    couples, babies = FindPartners(population, couples, currentSeed)
     print("  -- Matched couples")
 
     amount = amount + babies - 1
@@ -140,7 +143,7 @@ function FindPartners(population, oldCouples, currentSeed)
     end
 
 
-    return population, couples, babies
+    return couples, babies
 end
 
 function BabyMaking(couples, population, amount, currentSeed)
@@ -156,7 +159,7 @@ function BabyMaking(couples, population, amount, currentSeed)
             currentIndex = 1
         end
 
-        if #couples[currentIndex].child > 3 then goto continue end
+        if #couples[currentIndex].child > 2 then goto nextCycle end
 
         if couples[currentIndex].gender == 'm' then
             population[amount + babies] = People.CreateChild(0, 0, couples[currentIndex], couples[currentIndex].partner[1], amount + babies)
@@ -167,11 +170,13 @@ function BabyMaking(couples, population, amount, currentSeed)
         babies = babies + 1
         currentIndex = currentIndex + 1
 
-        ::continue::
+        ::nextCycle::
     end
-    print("  -- Babies made: " .. amountOfKids)
+    print("  -- Babies made: " .. babies)
 
-    amount = amount + babies - 1
+    if babies > 1 then
+        amount = amount + babies - 1
+    end
 
     return population, amount
 end

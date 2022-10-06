@@ -60,8 +60,8 @@ end
 function Person.CreateChild(x, y, father, mother, index)
     local newSeed = ((father.seed + index)) + ((mother.seed + index))
     local o = Person.CreateAdult(newSeed, x or 0, y or 0, father, mother, 0, nil, index)
-    father:addChild(o)
-    mother:addChild(o)
+    father:addChild(o, true)
+    mother:addChild(o, false)
     return o
 end
 
@@ -96,22 +96,14 @@ function Relations(o, father, mother, child)
     end
 
     o.child = {}
-    function o:addChild(child)
+    function o:addChild(child, addSiblings)
         self.child[#self.child + 1] = child
-        if #self.child > 1 then
+        if #self.child > 1 and addSiblings then
             for i = 1, #self.child - 1 do
                 -- Add Child to siblings
-                local alreadySibling = false
-                for j = 1, #self.child[i].siblings do
-                    if self.child[i].siblings[j] == child then AlreadySibling = true end
-                end
-                if not AlreadySibling then self.child[i]:addSibling(child) end
+                self.child[i]:addSibling(child)
                 -- Add siblings to Child
-                alreadySibling = false
-                for j = 1, #child.siblings do
-                    if child.siblings[j] == self.child[i] then AlreadySibling = true end
-                end
-                if not AlreadySibling then child:addSibling(self.child[i]) end
+                child:addSibling(self.child[i])
             end
         end
     end
@@ -182,15 +174,16 @@ function Person.PrintRelations(person)
     end
 
     if #person.child > 0 then
+        string = string .. "\n"
         for i = 1, #person.child do
-            string = string .. "\n\n" .. "  Child: " .. person.child[i].firstName .. " " .. person.child[i].lastName
+            string = string .. "\n" .. "  Child: " .. person.child[i].firstName .. " " .. person.child[i].lastName
         end
     end
 
     if #person.siblings > 0 then
-        string = string .. "\n Amount of siblings: " .. #person.siblings
+        string = string .. "\n"
         for i = 1, #person.siblings do
-            string = string .. "\n\n" .. "  Sibling: " .. person.siblings[i].firstName .. " " .. person.siblings[i].lastName
+            string = string .. "\n" .. "  Sibling: " .. person.siblings[i].firstName .. " " .. person.siblings[i].lastName
         end
     end
 
