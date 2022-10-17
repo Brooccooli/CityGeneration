@@ -49,4 +49,4 @@ function City.unloadPopulation(city)
     city.peopleCount = 0
 end
 
-return City 
+return City
