@@ -21,10 +21,8 @@ function City.Create(leader, peopleCount)
     o.peopleCount = peopleCount or love.math.random(500, 10000)
     o.population = {}
     o.couples = {}
-    --o.population, o.couples, o.peopleCount = CreatePopulation(peopleCount, o.leader, o.seed) 
     o.population, o.couples, o.peopleCount = Population.CreatePopulation(peopleCount, o.leader, o.seed) 
 
-    --o.population, o.peopleCount = BabyMaking(o.couples, o.population, o.peopleCount, o.seed)
     o.population, o.peopleCount = Population.BabyMaking(o.couples, o.population, o.peopleCount, o.seed)
 
     function o:newYear()
@@ -51,4 +49,4 @@ function City.unloadPopulation(city)
     city.peopleCount = 0
 end
 
-return City
+return City 
