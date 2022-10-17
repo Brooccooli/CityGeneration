@@ -74,6 +74,8 @@ end
 -- ##################################################
 --               Yearly functions
 -- ##################################################
+
+-- Goes through population and finds singles and matches them
 function FindPartners(population, oldCouples, currentSeed)
     local amount = #population
 
@@ -86,7 +88,9 @@ function FindPartners(population, oldCouples, currentSeed)
             break
         end
 
-        -- Find single person
+        -- Find single person 
+        -- why is it multiplied by #couples younger Alvin? 
+        -- Answer: To add more difference between years
         local randomIndex = math.floor(love.math.noise((currentSeed + #couples) * 2.8, (currentSeed + #couples) * 4.20) * amount)
         local indexDir = 1
         local firstParent = {}
@@ -146,13 +150,15 @@ function FindPartners(population, oldCouples, currentSeed)
     return couples, babies
 end
 
+-- Gets amount of kids that can be born from the seed and then creates as many as possible
+-- One couple can't have several babies per year and they can't have more than 3
 function BabyMaking(couples, population, amount, currentSeed)
     local amountOfKids = math.floor(#couples * love.math.noise(currentSeed *1.345, currentSeed * 1.345))
     local currentIndex = math.max(math.floor(#couples * love.math.noise(currentSeed * 2.4, currentSeed * 4.2)), 1)
 
     print("[DEBUG] chance: " .. love.math.noise(currentSeed * 1.345, currentSeed * 1.345) .. " Seed: " .. currentSeed * 1.345 .. ", Line: " .. debug.getinfo(1).currentline .. " in CityBase.lua")
 
-    local babies = 0
+    local babies = 1
 
     for i = 1, amountOfKids do
         if currentIndex + 1 >= #couples - 1 then

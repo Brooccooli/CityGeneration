@@ -85,7 +85,7 @@ function scene.keyreleased(key)
         mouseScroll.x, mouseScroll.y = 0, 0
         local tempPerson = peopleToPrint[1]
         peopleToPrint = {}
-        peopleToPrint[1] = myCity.population[love.math.random(startCitySize - 1, myCity.peopleCount)]
+        peopleToPrint[1] = myCity.population[love.math.random(startCitySize, myCity.peopleCount)]
         --peopleToPrint[1] = myCity.population[tempPerson.index + 1]
     end
     if key == 'f' then
